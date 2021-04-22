@@ -27,26 +27,33 @@ namespace ReactNativeFilePicker
         [ReactMethod("pick")]
         public async Task<string> PickFile()
         {
-            FileOpenPicker openPicker = new FileOpenPicker();
-            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-            openPicker.FileTypeFilter.Add("*");
-            var file = await openPicker.PickSingleFileAsync();
-
-            string base64Content = string.Empty;
-
-            var fileStream = await file.OpenReadAsync();
-
-            using (StreamReader reader = new StreamReader(fileStream.AsStream()))
+            try
             {
-                using (var memstream = new MemoryStream())
-                {
-                    reader.BaseStream.CopyTo(memstream);
-                    var bytes = memstream.ToArray();
-                    base64Content = Convert.ToBase64String(bytes);
-                }
-            }
+                FileOpenPicker openPicker = new FileOpenPicker();
+                openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                openPicker.FileTypeFilter.Add("*");
+                var file = await openPicker.PickSingleFileAsync();
 
-            return base64Content;
+                string base64Content = string.Empty;
+
+                var fileStream = await file.OpenReadAsync();
+
+                using (StreamReader reader = new StreamReader(fileStream.AsStream()))
+                {
+                    using (var memstream = new MemoryStream())
+                    {
+                        reader.BaseStream.CopyTo(memstream);
+                        var bytes = memstream.ToArray();
+                        base64Content = Convert.ToBase64String(bytes);
+                    }
+                }
+
+                return base64Content;
+            }
+            catch (Exception exc)
+            {
+                return exc.Message;
+            }
 
         }
     }
