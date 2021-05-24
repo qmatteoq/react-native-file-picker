@@ -25,13 +25,26 @@ namespace ReactNativeFilePicker
         }
 
         [ReactMethod("pick")]
-        public async Task<string> PickFile()
+        public async Task<string> PickFile(string extensions)
         {
             try
             {
                 FileOpenPicker openPicker = new FileOpenPicker();
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                openPicker.FileTypeFilter.Add("*");
+
+                if (string.IsNullOrEmpty(extensions))
+                {
+                    openPicker.FileTypeFilter.Add("*");
+                }
+                else
+                {
+                    var extensionsList = extensions.Split(",");
+                    foreach (var extension in extensionsList)
+                    {
+                        openPicker.FileTypeFilter.Add(extension);
+                    }
+                }
+                
                 var file = await openPicker.PickSingleFileAsync();
 
                 string base64Content = string.Empty;
@@ -58,7 +71,7 @@ namespace ReactNativeFilePicker
         }
 
         [ReactMethod("pickMultipleFiles")]
-        public async Task<List<string>> PickMultipleFiles()
+        public async Task<List<string>> PickMultipleFiles(string extensions)
         {
             try
             {
@@ -66,7 +79,21 @@ namespace ReactNativeFilePicker
                 
                 FileOpenPicker openPicker = new FileOpenPicker();
                 openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                openPicker.FileTypeFilter.Add("*");
+
+                if (string.IsNullOrEmpty(extensions))
+                {
+                    openPicker.FileTypeFilter.Add("*");
+                }
+                else
+                {
+                    var extensionsList = extensions.Split(",");
+                    foreach (var extension in extensionsList)
+                    {
+                        openPicker.FileTypeFilter.Add(extension);
+                    }
+                }
+
+
                 var files = await openPicker.PickMultipleFilesAsync();
 
                 foreach (var file in files)
