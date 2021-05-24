@@ -25,7 +25,7 @@ namespace ReactNativeFilePicker
         }
 
         [ReactMethod("pick")]
-        public async Task<string> PickFile(string extensions)
+        public async Task<string> PickFile(string extensions, double maxSize = 0)
         {
             try
             {
@@ -46,6 +46,15 @@ namespace ReactNativeFilePicker
                 }
                 
                 var file = await openPicker.PickSingleFileAsync();
+
+                var properties = await file.GetBasicPropertiesAsync();
+                if (maxSize > 0)
+                {
+                    if (properties.Size > maxSize)
+                    {
+                        return string.Empty;
+                    }
+                }
 
                 string base64Content = string.Empty;
 
@@ -71,7 +80,7 @@ namespace ReactNativeFilePicker
         }
 
         [ReactMethod("pickMultipleFiles")]
-        public async Task<List<string>> PickMultipleFiles(string extensions)
+        public async Task<List<string>> PickMultipleFiles(string extensions, double maxSize = 0)
         {
             try
             {
