@@ -50,7 +50,8 @@ namespace ReactNativeFilePicker
                 var properties = await file.GetBasicPropertiesAsync();
                 if (maxSize > 0)
                 {
-                    if (properties.Size > maxSize)
+                    double sizeInKb = properties.Size / 1024;
+                    if (sizeInKb > maxSize)
                     {
                         return string.Empty;
                     }
