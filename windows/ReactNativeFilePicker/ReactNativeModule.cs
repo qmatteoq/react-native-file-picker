@@ -56,5 +56,44 @@ namespace ReactNativeFilePicker
             }
 
         }
+
+        [ReactMethod("pickMultipleFiles")]
+        public async Task<List<string>> PickMultipleFiles()
+        {
+            try
+            {
+                List<string> filesBase64 = new List<string>();
+                
+                FileOpenPicker openPicker = new FileOpenPicker();
+                openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                openPicker.FileTypeFilter.Add("*");
+                var files = await openPicker.PickMultipleFilesAsync();
+
+                foreach (var file in files)
+                {
+                    string base64Content = string.Empty;
+
+                    var fileStream = await file.OpenReadAsync();
+
+                    using (StreamReader reader = new StreamReader(fileStream.AsStream()))
+                    {
+                        using (var memstream = new MemoryStream())
+                        {
+                            reader.BaseStream.CopyTo(memstream);
+                            var bytes = memstream.ToArray();
+                            base64Content = Convert.ToBase64String(bytes);
+
+                            filesBase64.Add(base64Content);
+                        }
+                    }
+                }
+
+                return filesBase64;
+            }
+            catch (Exception exc)
+            {
+                throw exc; 
+            }
+        }
     }
 }
