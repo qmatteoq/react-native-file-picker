@@ -9,7 +9,8 @@
     "android",
     "index.js",
     "ios",
-    "react-native-file-picker.podspec"
+    "react-native-file-picker.podspec",
+    "windows"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
